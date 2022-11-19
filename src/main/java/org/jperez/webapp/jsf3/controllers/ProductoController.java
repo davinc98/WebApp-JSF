@@ -13,6 +13,7 @@ import org.jperez.webapp.jsf3.entities.Producto;
 import org.jperez.webapp.jsf3.services.ProductoService;
 
 import java.util.List;
+import java.util.ResourceBundle;
 
 
 @Model
@@ -22,17 +23,20 @@ public class ProductoController {
 
     private Producto producto;
 
-    @Inject
-    private ProductoService service;
-    private ProductoService ser;
+//    @Inject
+//    private FacesContext facesContext;
 
     @Inject
-    private FacesContext facesContext;
+    private ProductoService service;
+
+    @Inject
+    private ResourceBundle bundle;
+
 
     @Produces
     @Model
     public  String titulo(){
-        return "Hola Mundo JavaServer Faces 3.0";
+        return bundle.getString("producto.texto.titulo");
     }
 
     @Produces
@@ -42,13 +46,11 @@ public class ProductoController {
         return service.listar();
     }
 
-
     @Produces
     @Model
     public Producto producto(){
         this.producto = new Producto();
         if(id!=null && id>0){
-            ser = service;
             service.porId(id).ifPresent(p->{
                 this.producto = p;
             });
@@ -66,11 +68,11 @@ public class ProductoController {
         service.guardar(producto);
         System.out.println(producto);
         if(producto.getId()!=null && producto.getId()>0){
-            facesContext.addMessage(null,
-                    new FacesMessage("Producto "+producto.getNombre()+" actualizado con exito!"));
+//            facesContext.addMessage(null,
+//                    new FacesMessage(String.format(bundle.getString("producto.mensaje.editar"), producto.getNombre())));
         }else{
-            facesContext.addMessage(null,
-                    new FacesMessage("Producto "+producto.getNombre()+" creado con exito!"));
+//            facesContext.addMessage(null,
+//                    new FacesMessage(String.format(bundle.getString("producto.mensaje.crear"), producto.getNombre())));
         }
         return "index.xhtml?faces-redirect=true";
     }
@@ -82,8 +84,8 @@ public class ProductoController {
 
     public String eliminar(Producto prod){
         service.eliminar(prod.getId());
-        facesContext.addMessage(null,
-                new FacesMessage("Producto "+prod.getNombre()+" eliminado con exito!"));
+//        facesContext.addMessage(null,
+//                new FacesMessage(String.format(bundle.getString("producto.mensaje.eliminar"), prod.getNombre())));
         return "index.xhtml?faces-redirect=true";
     }
 
